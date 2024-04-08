@@ -14,6 +14,18 @@ pipeline{
                 sh "docker build -t sample-website ."
             }
         }
+
+        stage("SonarQube Analysis") {
+            steps {
+                script {
+                    def scannerHome = tool name: 'sonarqube-server'
+                    withSonarQubeEnv('sonarqube-server') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+            }
+        }
+
         stage("Push to DockerHub"){
             steps{
                 echo "Pushing the image to DockerHub."
@@ -24,22 +36,6 @@ pipeline{
                 }
             }
         }
-        
-        stage("SCM"){
-            steps{
-            checkout scm
-            }
-        }
-
-        stage("SonarQube Analysis"){
-            steps{
-                echo "Analysing the code using sonarqube."
-                def scannerHome = tool 'sonarqube-server';
-                withSonarQubeEnv(){
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
-            }
-        }        
 
         stage("Deploy"){
             steps{
