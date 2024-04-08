@@ -24,6 +24,23 @@ pipeline{
                 }
             }
         }
+        
+        stage("SCM"){
+            steps{
+            checkout scm
+            }
+        }
+
+        stage("SonarQube Analysis"){
+            steps{
+                echo "Analysing the code using sonarqube."
+                def scannerHome = tool 'sonarqube-server';
+                withSonarQubeEnv(){
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }        
+
         stage("Deploy"){
             steps{
                 echo "Deploying the container."
