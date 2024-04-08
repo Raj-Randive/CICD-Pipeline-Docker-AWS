@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  sample-web:
+    build: .
+    ports:
+      - "8000:80"
+    # volumes:
+    #   - ./index.html:/usr/share/nginx/html/index.html
